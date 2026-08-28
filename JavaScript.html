@@ -257,7 +257,7 @@
         '<div class="transaction-date">' + formatDate(t.date) + '</div>' +
         notesHtml +
       '</div>' +
-      '<div class="transaction-amount">' + sign + '\u20B9' + Math.abs(t.amount).toFixed(2) + '</div>' +
+      '<div class="transaction-amount">' + sign + 'AED' + Math.abs(t.amount).toFixed(2) + '</div>' +
       '<button class="delete-btn" data-id="' + t.id + '" aria-label="Delete transaction"><i class="fas fa-trash-alt"></i></button>';
 
     li.querySelector('.delete-btn').addEventListener('click', function () {
@@ -281,7 +281,7 @@
     var total = transactions.reduce(function (acc, t) {
       return acc + (t.type === 'income' ? t.amount : -t.amount);
     }, 0);
-    balanceElement.textContent = '\u20B9' + total.toFixed(2);
+    balanceElement.textContent = 'AED' + total.toFixed(2);
     balanceElement.style.color = total > 0 ? 'var(--income-color)' : (total < 0 ? 'var(--expense-color)' : 'inherit');
   }
 
@@ -292,8 +292,8 @@
     var expense = transactions
       .filter(function (t) { return t.type === 'expense'; })
       .reduce(function (acc, t) { return acc + t.amount; }, 0);
-    incomeTotalElement.textContent = '\u20B9' + income.toFixed(2);
-    expenseTotalElement.textContent = '\u20B9' + expense.toFixed(2);
+    incomeTotalElement.textContent = 'AED' + income.toFixed(2);
+    expenseTotalElement.textContent = 'AED' + expense.toFixed(2);
   }
 
   function resetForm() {
@@ -565,7 +565,7 @@
         doc.setFont(undefined, 'normal');
         doc.setFontSize(8);
         doc.setTextColor(150, 150, 150);
-        doc.text('Generated at ' + generatedAt, margin, pageHeight - 20);
+        doc.text('Shahzad Hanif - Generated at ' + generatedAt, margin, pageHeight - 20);
       }
     });
 

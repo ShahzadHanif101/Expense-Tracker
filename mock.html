@@ -443,7 +443,7 @@ select { appearance: none; -webkit-appearance: none; -moz-appearance: none; back
           <div class="balance-card">
             <div class="balance-info">
               <h3>Your Balance</h3>
-              <h2 id="balance">₹0.00</h2>
+              <h2 id="balance">AED0.00</h2>
             </div>
             <div class="balance-icon"><i class="fas fa-chart-line"></i></div>
           </div>
@@ -455,14 +455,14 @@ select { appearance: none; -webkit-appearance: none; -moz-appearance: none; back
               <div class="summary-icon"><i class="fas fa-arrow-down"></i></div>
               <div class="summary-details">
                 <h4>Income (credit)</h4>
-                <p id="income-total">₹0.00</p>
+                <p id="income-total">AED0.00</p>
               </div>
             </div>
             <div class="summary-card expense-card">
               <div class="summary-icon"><i class="fas fa-arrow-up"></i></div>
               <div class="summary-details">
                 <h4>Expenses</h4>
-                <p id="expense-total">₹0.00</p>
+                <p id="expense-total">AED0.00</p>
               </div>
             </div>
           </div>
@@ -490,7 +490,7 @@ select { appearance: none; -webkit-appearance: none; -moz-appearance: none; back
                 <div class="form-group">
                   <label for="amount">Amount</label>
                   <div class="input-with-icon">
-                    <span class="input-icon">₹</span>
+                    <span class="input-icon">AED</span>
                     <input type="number" id="amount" inputmode="decimal" step="0.01" placeholder="0.00" required>
                   </div>
                 </div>
@@ -1017,7 +1017,7 @@ select { appearance: none; -webkit-appearance: none; -moz-appearance: none; back
         '<div class="transaction-date">' + formatDate(t.date) + '</div>' +
         notesHtml +
       '</div>' +
-      '<div class="transaction-amount">' + sign + '\u20B9' + Math.abs(t.amount).toFixed(2) + '</div>' +
+      '<div class="transaction-amount">' + sign + 'AED' + Math.abs(t.amount).toFixed(2) + '</div>' +
       '<button class="delete-btn" data-id="' + t.id + '" aria-label="Delete transaction"><i class="fas fa-trash-alt"></i></button>';
 
     li.querySelector('.delete-btn').addEventListener('click', function () {
@@ -1041,7 +1041,7 @@ select { appearance: none; -webkit-appearance: none; -moz-appearance: none; back
     var total = transactions.reduce(function (acc, t) {
       return acc + (t.type === 'income' ? t.amount : -t.amount);
     }, 0);
-    balanceElement.textContent = '\u20B9' + total.toFixed(2);
+    balanceElement.textContent = 'AED' + total.toFixed(2);
     balanceElement.style.color = total > 0 ? 'var(--income-color)' : (total < 0 ? 'var(--expense-color)' : 'inherit');
   }
 
@@ -1052,8 +1052,8 @@ select { appearance: none; -webkit-appearance: none; -moz-appearance: none; back
     var expense = transactions
       .filter(function (t) { return t.type === 'expense'; })
       .reduce(function (acc, t) { return acc + t.amount; }, 0);
-    incomeTotalElement.textContent = '\u20B9' + income.toFixed(2);
-    expenseTotalElement.textContent = '\u20B9' + expense.toFixed(2);
+    incomeTotalElement.textContent = 'AED' + income.toFixed(2);
+    expenseTotalElement.textContent = 'AED' + expense.toFixed(2);
   }
 
   function resetForm() {
@@ -1326,7 +1326,7 @@ select { appearance: none; -webkit-appearance: none; -moz-appearance: none; back
         doc.setFont(undefined, 'normal');
         doc.setFontSize(8);
         doc.setTextColor(150, 150, 150);
-        doc.text('Generated at ' + generatedAt, margin, pageHeight - 20);
+        doc.text('Shahzad Hanif - Generated at ' + generatedAt, margin, pageHeight - 20);
       }
     });
 
