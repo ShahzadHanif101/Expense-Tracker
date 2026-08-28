@@ -525,15 +525,16 @@
       ];
     });
 
-    // Fixed widths for Date / Type / Amount so they never wrap;
-    // Description and Notes share the remaining space.
+      // Fixed widths for Date / Type / Amount / Description so they never wrap;
+    // Notes shares the remaining space.
     var usableWidth = pageWidth - margin * 2;
     var dateW = 72;
     var typeW = 52;
     var amountW = 66;
-    var remaining = usableWidth - dateW - typeW - amountW;
-    var descW = Math.round(remaining * 0.52);
-    var notesW = remaining - descW;
+    var descW = 100; // Set your desired fixed width here
+    
+    // Notes takes whatever remaining space is left
+    var notesW = usableWidth - dateW - typeW - amountW - descW;
 
     doc.autoTable({
       startY: cardY + cardHeight + 22,
