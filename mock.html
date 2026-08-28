@@ -114,7 +114,7 @@ input:checked + .slider:before { transform: translateX(24px); }
 }
 .tab-btn {
     flex: 1;
-    padding: 10px 14px;
+    padding: 10px 10px;
     border: none;
     background: transparent;
     color: var(--gray-medium);
@@ -202,6 +202,13 @@ select { appearance: none; -webkit-appearance: none; -moz-appearance: none; back
 .primary-btn:hover { background-color: var(--secondary-color); }
 .btn[disabled] { opacity: 0.65; cursor: not-allowed; transform: none !important; }
 
+.link-btn {
+    background: none; border: none; color: var(--primary-color); font-weight: 500;
+    font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; gap: 6px;
+    font-family: inherit; padding: 6px 4px;
+}
+.link-btn:hover { text-decoration: underline; }
+
 .transactions-section { flex: 1; margin-bottom: 10px; }
 .transactions-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; flex-wrap: wrap; gap: 12px; }
 .transactions-header h3 { font-size: 1.1rem; display: flex; align-items: center; gap: 10px; color: var(--primary-color); }
@@ -213,10 +220,11 @@ select { appearance: none; -webkit-appearance: none; -moz-appearance: none; back
 
 .transactions-container { background-color: var(--card-color); border-radius: 15px; padding: 16px; box-shadow: 0 5px 15px var(--shadow-color); }
 
-#transactions { list-style: none; max-height: 55vh; overflow-y: auto; padding-right: 6px; -webkit-overflow-scrolling: touch; }
-#transactions::-webkit-scrollbar { width: 5px; }
-#transactions::-webkit-scrollbar-track { background: var(--border-color); border-radius: 3px; }
-#transactions::-webkit-scrollbar-thumb { background: var(--primary-color); border-radius: 3px; }
+.tx-list { list-style: none; padding-right: 6px; }
+.tx-list-compact { max-height: 480px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+.tx-list-compact::-webkit-scrollbar { width: 5px; }
+.tx-list-compact::-webkit-scrollbar-track { background: var(--border-color); border-radius: 3px; }
+.tx-list-compact::-webkit-scrollbar-thumb { background: var(--primary-color); border-radius: 3px; }
 
 .transaction {
     display: flex; justify-content: space-between; align-items: center;
@@ -224,6 +232,7 @@ select { appearance: none; -webkit-appearance: none; -moz-appearance: none; back
     border-radius: 10px; box-shadow: 0 3px 10px var(--shadow-color);
     position: relative; border-left: 4px solid; gap: 10px;
 }
+.transaction:last-child { margin-bottom: 0; }
 .transaction.income { border-left-color: var(--income-color); }
 .transaction.expense { border-left-color: var(--expense-color); }
 
@@ -250,6 +259,22 @@ select { appearance: none; -webkit-appearance: none; -moz-appearance: none; back
 .delete-btn:hover, .delete-btn:active { background-color: rgba(239, 35, 60, 0.1); color: var(--error-color); }
 
 .no-transactions { text-align: center; padding: 30px; color: var(--gray-medium); }
+
+/* Pagination */
+.pagination {
+    display: flex; align-items: center; justify-content: center; flex-wrap: wrap;
+    gap: 6px; margin-top: 18px;
+}
+.page-btn {
+    min-width: 36px; height: 36px; padding: 0 8px; border-radius: 8px;
+    border: 1px solid var(--border-color); background: var(--card-color); color: var(--text-color);
+    font-size: 0.85rem; font-weight: 500; cursor: pointer; font-family: inherit;
+    display: flex; align-items: center; justify-content: center;
+}
+.page-btn:hover:not(.active):not(:disabled) { border-color: var(--primary-color); color: var(--primary-color); }
+.page-btn.active { background: var(--primary-color); border-color: var(--primary-color); color: #fff; }
+.page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.page-ellipsis { color: var(--gray-medium); padding: 0 4px; font-size: 0.85rem; }
 
 /* ===== Reports page ===== */
 .report-preview-section { display: none; flex-direction: column; gap: 18px; }
@@ -341,6 +366,7 @@ select { appearance: none; -webkit-appearance: none; -moz-appearance: none; back
     .form-section { display: none; }
     .form-section.active { display: block; }
     .toast-message { bottom: 90px; }
+    .tx-list-compact { max-height: none; overflow: visible; }
 }
 
 @media (max-width: 480px) {
@@ -350,7 +376,9 @@ select { appearance: none; -webkit-appearance: none; -moz-appearance: none; back
     .summary-grid { grid-template-columns: 1fr; }
     .transaction { flex-wrap: wrap; }
     .transaction-amount { order: 3; margin-left: auto; }
-    .tab-btn { font-size: 0.8rem; padding: 9px 8px; }
+    .tab-btn { font-size: 0.78rem; padding: 9px 6px; gap: 5px; }
+    .transactions-header { flex-direction: column; align-items: flex-start; }
+    .page-btn { min-width: 32px; height: 32px; font-size: 0.8rem; }
 }
 
 .mock-banner {
@@ -405,6 +433,7 @@ select { appearance: none; -webkit-appearance: none; -moz-appearance: none; back
     <main class="app-main">
       <nav class="app-tabs">
         <button type="button" class="tab-btn active" data-page="dashboard"><i class="fas fa-home"></i> Dashboard</button>
+        <button type="button" class="tab-btn" data-page="history"><i class="fas fa-list"></i> History</button>
         <button type="button" class="tab-btn" data-page="reports"><i class="fas fa-file-pdf"></i> Reports</button>
       </nav>
 
@@ -486,11 +515,26 @@ select { appearance: none; -webkit-appearance: none; -moz-appearance: none; back
 
         <section class="transactions-section">
           <div class="transactions-header">
-            <h3><i class="fas fa-history"></i> Transaction History</h3>
+            <h3><i class="fas fa-history"></i> Recent Transactions</h3>
+            <button type="button" class="link-btn" id="view-all-btn">View All <i class="fas fa-arrow-right"></i></button>
+          </div>
+          <div class="transactions-container">
+            <ul id="recent-transactions" class="tx-list tx-list-compact">
+              <li class="no-transactions"><i class="fas fa-spinner fa-spin"></i> Loading...</li>
+            </ul>
+          </div>
+        </section>
+      </div>
+
+      <!-- ============ HISTORY PAGE ============ -->
+      <div id="page-history" class="app-page">
+        <section class="transactions-section">
+          <div class="transactions-header">
+            <h3><i class="fas fa-list"></i> All Transactions</h3>
             <div class="filter-controls">
               <div class="filter-group">
                 <div class="select-wrapper small">
-                  <select id="filter-type">
+                  <select id="history-filter-type">
                     <option value="all">All Types</option>
                     <option value="income">Income</option>
                     <option value="expense">Expense</option>
@@ -499,15 +543,16 @@ select { appearance: none; -webkit-appearance: none; -moz-appearance: none; back
                 </div>
               </div>
               <div class="filter-group search-group">
-                <input type="text" id="filter-search" placeholder="Search description / notes...">
+                <input type="text" id="history-filter-search" placeholder="Search description / notes...">
               </div>
             </div>
           </div>
           <div class="transactions-container">
-            <ul id="transactions">
+            <ul id="history-transactions" class="tx-list">
               <li class="no-transactions"><i class="fas fa-spinner fa-spin"></i> Loading...</li>
             </ul>
           </div>
+          <div class="pagination" id="history-pagination"></div>
         </section>
       </div>
 
@@ -596,14 +641,18 @@ select { appearance: none; -webkit-appearance: none; -moz-appearance: none; back
       if (raw) {
         try { return JSON.parse(raw); } catch (e) { /* fall through to reset */ }
       }
-      var initial = {
-        Expenses: [
-          { date: new Date().toISOString().split('T')[0], description: 'Groceries', notes: 'Weekly shop\nIncluded snacks', amount: 45.5 }
-        ],
-        credit: [
-          { date: new Date().toISOString().split('T')[0], description: 'Salary', notes: 'Monthly pay', amount: 2000 }
-        ]
-      };
+      var initial = { Expenses: [], credit: [] };
+      var today = new Date();
+      for (var i = 0; i < 35; i++) {
+        var d = new Date(today);
+        d.setDate(today.getDate() - i);
+        var dateStr = d.toISOString().split('T')[0];
+        if (i % 3 === 0) {
+          initial.credit.push({ date: dateStr, description: 'Sample Income ' + i, notes: 'Auto-seeded row', amount: 500 + i * 10 });
+        } else {
+          initial.Expenses.push({ date: dateStr, description: 'Sample Expense ' + i, notes: 'Auto-seeded\nrow ' + i, amount: 20 + i * 3 });
+        }
+      }
       localStorage.setItem(STORE_KEY, JSON.stringify(initial));
       return initial;
     }
@@ -711,25 +760,33 @@ select { appearance: none; -webkit-appearance: none; -moz-appearance: none; back
   <!-- ================= END MOCK SHIM ================= -->
 <script>
 (function () {
+  var PAGE_SIZE = 30;
+
   var form = document.getElementById('form');
   var descriptionInput = document.getElementById('description');
   var amountInput = document.getElementById('amount');
   var dateInput = document.getElementById('date');
   var typeInput = document.getElementById('type');
   var notesInput = document.getElementById('notes');
-  var transactionsList = document.getElementById('transactions');
   var balanceElement = document.getElementById('balance');
   var incomeTotalElement = document.getElementById('income-total');
   var expenseTotalElement = document.getElementById('expense-total');
-  var filterTypeInput = document.getElementById('filter-type');
-  var filterSearchInput = document.getElementById('filter-search');
   var themeToggle = document.getElementById('theme-toggle');
   var submitBtn = document.getElementById('submit-btn');
   var fab = document.getElementById('fab-add');
   var formSection = document.getElementById('form-section');
 
+  var recentList = document.getElementById('recent-transactions');
+  var viewAllBtn = document.getElementById('view-all-btn');
+
+  var historyList = document.getElementById('history-transactions');
+  var historyFilterType = document.getElementById('history-filter-type');
+  var historyFilterSearch = document.getElementById('history-filter-search');
+  var historyPagination = document.getElementById('history-pagination');
+
   var tabButtons = document.querySelectorAll('.tab-btn');
   var pages = document.querySelectorAll('.app-page');
+
   var reportFromInput = document.getElementById('report-from');
   var reportToInput = document.getElementById('report-to');
   var generateReportBtn = document.getElementById('generate-report-btn');
@@ -738,6 +795,7 @@ select { appearance: none; -webkit-appearance: none; -moz-appearance: none; back
 
   var transactions = [];
   var reportData = null;
+  var historyPage = 1;
 
   var savedTheme = localStorage.getItem('theme') || 'light';
   document.documentElement.setAttribute('data-theme', savedTheme);
@@ -753,7 +811,9 @@ select { appearance: none; -webkit-appearance: none; -moz-appearance: none; back
   }
 
   function loadTransactions() {
-    transactionsList.innerHTML = '<li class="no-transactions"><i class="fas fa-spinner fa-spin"></i> Loading...</li>';
+    var loadingHtml = '<li class="no-transactions"><i class="fas fa-spinner fa-spin"></i> Loading...</li>';
+    recentList.innerHTML = loadingHtml;
+    historyList.innerHTML = loadingHtml;
     google.script.run
       .withSuccessHandler(function (data) {
         transactions = data || [];
@@ -779,6 +839,7 @@ select { appearance: none; -webkit-appearance: none; -moz-appearance: none; back
     google.script.run
       .withSuccessHandler(function (data) {
         transactions = data || [];
+        historyPage = 1;
         updateUI();
         resetForm();
         setSubmitting(false);
@@ -791,9 +852,6 @@ select { appearance: none; -webkit-appearance: none; -moz-appearance: none; back
       })
       .addTransaction(tx);
   });
-
-  filterTypeInput.addEventListener('change', updateUI);
-  filterSearchInput.addEventListener('input', updateUI);
 
   themeToggle.addEventListener('change', function () {
     var theme = this.checked ? 'dark' : 'light';
@@ -809,27 +867,49 @@ select { appearance: none; -webkit-appearance: none; -moz-appearance: none; back
     }
   });
 
+  viewAllBtn.addEventListener('click', function () {
+    switchTab('history');
+  });
+
   /* ---------------- Tabs ---------------- */
   tabButtons.forEach(function (btn) {
     btn.addEventListener('click', function () {
-      var target = btn.getAttribute('data-page');
-      tabButtons.forEach(function (b) { b.classList.remove('active'); });
-      pages.forEach(function (p) { p.classList.remove('active'); });
-      btn.classList.add('active');
-      document.getElementById('page-' + target).classList.add('active');
-      // Hide the floating add-transaction button while on the Reports tab
-      fab.style.display = target === 'reports' ? 'none' : '';
+      switchTab(btn.getAttribute('data-page'));
     });
   });
+
+  function switchTab(target) {
+    tabButtons.forEach(function (b) {
+      b.classList.toggle('active', b.getAttribute('data-page') === target);
+    });
+    pages.forEach(function (p) {
+      p.classList.toggle('active', p.id === 'page-' + target);
+    });
+    // Floating add-transaction button is only relevant on the Dashboard
+    fab.style.display = target === 'dashboard' ? '' : 'none';
+  }
 
   function setSubmitting(isSubmitting) {
     submitBtn.disabled = isSubmitting;
     submitBtn.querySelector('span').textContent = isSubmitting ? 'Adding...' : 'Add Transaction';
   }
 
-  function filterTransactions() {
-    var typeFilter = filterTypeInput.value;
-    var search = filterSearchInput.value.trim().toLowerCase();
+  /* ---------------- Rendering ---------------- */
+
+  function updateUI() {
+    renderRecent();
+    renderHistory();
+    updateBalance();
+    updateSummary();
+  }
+
+  function renderRecent() {
+    renderList(transactions.slice(0, 10), recentList);
+  }
+
+  function filterHistoryTransactions() {
+    var typeFilter = historyFilterType.value;
+    var search = historyFilterSearch.value.trim().toLowerCase();
     return transactions.filter(function (t) {
       var typeMatch = typeFilter === 'all' || t.type === typeFilter;
       var searchMatch = !search ||
@@ -839,57 +919,122 @@ select { appearance: none; -webkit-appearance: none; -moz-appearance: none; back
     });
   }
 
-  function updateUI() {
-    displayTransactions(filterTransactions());
-    updateBalance();
-    updateSummary();
+  function renderHistory() {
+    var filtered = filterHistoryTransactions();
+    var totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+    if (historyPage > totalPages) historyPage = totalPages;
+    if (historyPage < 1) historyPage = 1;
+
+    var startIdx = (historyPage - 1) * PAGE_SIZE;
+    var pageItems = filtered.slice(startIdx, startIdx + PAGE_SIZE);
+
+    renderList(pageItems, historyList);
+    renderPagination(totalPages, filtered.length);
   }
 
-  function displayTransactions(list) {
-    transactionsList.innerHTML = '';
+  historyFilterType.addEventListener('change', function () { historyPage = 1; renderHistory(); });
+  historyFilterSearch.addEventListener('input', function () { historyPage = 1; renderHistory(); });
 
-    if (list.length === 0) {
-      transactionsList.innerHTML = '<li class="no-transactions"><i class="fas fa-coins"></i> No transactions found</li>';
-      return;
+  function renderPagination(totalPages, totalItems) {
+    historyPagination.innerHTML = '';
+    if (totalPages <= 1) return;
+
+    function makeBtn(label, page, opts) {
+      opts = opts || {};
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'page-btn' + (opts.active ? ' active' : '');
+      btn.textContent = label;
+      if (opts.disabled) {
+        btn.disabled = true;
+      } else if (!opts.active) {
+        btn.addEventListener('click', function () {
+          historyPage = page;
+          renderHistory();
+          historyPagination.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        });
+      }
+      return btn;
     }
 
+    historyPagination.appendChild(makeBtn('\u2039', historyPage - 1, { disabled: historyPage === 1 }));
+
+    var windowSize = 1;
+    var start = Math.max(1, historyPage - windowSize);
+    var end = Math.min(totalPages, historyPage + windowSize);
+
+    if (start > 1) {
+      historyPagination.appendChild(makeBtn('1', 1));
+      if (start > 2) {
+        var dots1 = document.createElement('span');
+        dots1.className = 'page-ellipsis';
+        dots1.textContent = '\u2026';
+        historyPagination.appendChild(dots1);
+      }
+    }
+
+    for (var p = start; p <= end; p++) {
+      historyPagination.appendChild(makeBtn(String(p), p, { active: p === historyPage }));
+    }
+
+    if (end < totalPages) {
+      if (end < totalPages - 1) {
+        var dots2 = document.createElement('span');
+        dots2.className = 'page-ellipsis';
+        dots2.textContent = '\u2026';
+        historyPagination.appendChild(dots2);
+      }
+      historyPagination.appendChild(makeBtn(String(totalPages), totalPages));
+    }
+
+    historyPagination.appendChild(makeBtn('\u203A', historyPage + 1, { disabled: historyPage === totalPages }));
+  }
+
+  function renderList(list, targetUl) {
+    targetUl.innerHTML = '';
+    if (list.length === 0) {
+      targetUl.innerHTML = '<li class="no-transactions"><i class="fas fa-coins"></i> No transactions found</li>';
+      return;
+    }
     list.forEach(function (t) {
-      var sign = t.type === 'income' ? '+' : '-';
-      var li = document.createElement('li');
-      li.classList.add('transaction', t.type);
+      targetUl.appendChild(buildTransactionLi(t));
+    });
+  }
 
-      var notesHtml = t.notes
-        ? '<div class="transaction-notes">' + escapeHtml(t.notes) + '</div>'
-        : '';
+  function buildTransactionLi(t) {
+    var sign = t.type === 'income' ? '+' : '-';
+    var li = document.createElement('li');
+    li.classList.add('transaction', t.type);
 
-      li.innerHTML =
-        '<div class="transaction-info">' +
-          '<div class="transaction-description">' + escapeHtml(t.description) + '</div>' +
-          '<span class="transaction-category">' + (t.type === 'income' ? 'Income' : 'Expense') + '</span>' +
-          '<div class="transaction-date">' + formatDate(t.date) + '</div>' +
-          notesHtml +
-        '</div>' +
-        '<div class="transaction-amount">' + sign + '\u20B9' + Math.abs(t.amount).toFixed(2) + '</div>' +
-        '<button class="delete-btn" data-id="' + t.id + '" aria-label="Delete transaction"><i class="fas fa-trash-alt"></i></button>';
+    var notesHtml = t.notes
+      ? '<div class="transaction-notes">' + escapeHtml(t.notes) + '</div>'
+      : '';
 
-      transactionsList.appendChild(li);
+    li.innerHTML =
+      '<div class="transaction-info">' +
+        '<div class="transaction-description">' + escapeHtml(t.description) + '</div>' +
+        '<span class="transaction-category">' + (t.type === 'income' ? 'Income' : 'Expense') + '</span>' +
+        '<div class="transaction-date">' + formatDate(t.date) + '</div>' +
+        notesHtml +
+      '</div>' +
+      '<div class="transaction-amount">' + sign + '\u20B9' + Math.abs(t.amount).toFixed(2) + '</div>' +
+      '<button class="delete-btn" data-id="' + t.id + '" aria-label="Delete transaction"><i class="fas fa-trash-alt"></i></button>';
+
+    li.querySelector('.delete-btn').addEventListener('click', function () {
+      var id = this.getAttribute('data-id');
+      if (!confirm('Delete this transaction?')) return;
+      this.disabled = true;
+      google.script.run
+        .withSuccessHandler(function (data) {
+          transactions = data || [];
+          updateUI();
+          showSuccessMessage('Transaction deleted!');
+        })
+        .withFailureHandler(handleError)
+        .deleteTransaction(id);
     });
 
-    document.querySelectorAll('.delete-btn').forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        var id = this.getAttribute('data-id');
-        if (!confirm('Delete this transaction?')) return;
-        this.disabled = true;
-        google.script.run
-          .withSuccessHandler(function (data) {
-            transactions = data || [];
-            updateUI();
-            showSuccessMessage('Transaction deleted!');
-          })
-          .withFailureHandler(handleError)
-          .deleteTransaction(id);
-      });
-    });
+    return li;
   }
 
   function updateBalance() {
@@ -1140,15 +1285,32 @@ select { appearance: none; -webkit-appearance: none; -moz-appearance: none; back
       ];
     });
 
+    // Fixed widths for Date / Type / Amount so they never wrap;
+    // Description and Notes share the remaining space.
+    var usableWidth = pageWidth - margin * 2;
+    var dateW = 72;
+    var typeW = 52;
+    var amountW = 66;
+    var remaining = usableWidth - dateW - typeW - amountW;
+    var descW = Math.round(remaining * 0.52);
+    var notesW = remaining - descW;
+
     doc.autoTable({
       startY: cardY + cardHeight + 22,
       head: [['Date', 'Description', 'Notes', 'Type', 'Amount']],
       body: tableRows.length ? tableRows : [['-', 'No transactions in this period', '-', '-', '-']],
       margin: { left: margin, right: margin, bottom: 40 },
+      tableWidth: usableWidth,
       styles: { fontSize: 9, cellPadding: 6, overflow: 'linebreak', valign: 'top' },
       headStyles: { fillColor: [67, 97, 238], textColor: 255, fontStyle: 'bold' },
       alternateRowStyles: { fillColor: [246, 247, 251] },
-      columnStyles: { 4: { halign: 'right' } },
+      columnStyles: {
+        0: { cellWidth: dateW },
+        1: { cellWidth: descW },
+        2: { cellWidth: notesW },
+        3: { cellWidth: typeW },
+        4: { cellWidth: amountW, halign: 'right' }
+      },
       didParseCell: function (hook) {
         if (hook.section === 'body' && hook.column.index === 4 && tableRows.length) {
           var rowType = data.rows[hook.row.index] && data.rows[hook.row.index].type;
@@ -1162,7 +1324,7 @@ select { appearance: none; -webkit-appearance: none; -moz-appearance: none; back
         doc.setFont(undefined, 'normal');
         doc.setFontSize(8);
         doc.setTextColor(150, 150, 150);
-        doc.text('Shahzad Hanif - Generated at ' + generatedAt, margin, pageHeight - 20);
+        doc.text('Generated at ' + generatedAt, margin, pageHeight - 20);
       }
     });
 

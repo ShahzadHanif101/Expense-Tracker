@@ -104,7 +104,7 @@ input:checked + .slider:before { transform: translateX(24px); }
 }
 .tab-btn {
     flex: 1;
-    padding: 10px 14px;
+    padding: 10px 10px;
     border: none;
     background: transparent;
     color: var(--gray-medium);
@@ -192,6 +192,13 @@ select { appearance: none; -webkit-appearance: none; -moz-appearance: none; back
 .primary-btn:hover { background-color: var(--secondary-color); }
 .btn[disabled] { opacity: 0.65; cursor: not-allowed; transform: none !important; }
 
+.link-btn {
+    background: none; border: none; color: var(--primary-color); font-weight: 500;
+    font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; gap: 6px;
+    font-family: inherit; padding: 6px 4px;
+}
+.link-btn:hover { text-decoration: underline; }
+
 .transactions-section { flex: 1; margin-bottom: 10px; }
 .transactions-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; flex-wrap: wrap; gap: 12px; }
 .transactions-header h3 { font-size: 1.1rem; display: flex; align-items: center; gap: 10px; color: var(--primary-color); }
@@ -203,10 +210,11 @@ select { appearance: none; -webkit-appearance: none; -moz-appearance: none; back
 
 .transactions-container { background-color: var(--card-color); border-radius: 15px; padding: 16px; box-shadow: 0 5px 15px var(--shadow-color); }
 
-#transactions { list-style: none; max-height: 55vh; overflow-y: auto; padding-right: 6px; -webkit-overflow-scrolling: touch; }
-#transactions::-webkit-scrollbar { width: 5px; }
-#transactions::-webkit-scrollbar-track { background: var(--border-color); border-radius: 3px; }
-#transactions::-webkit-scrollbar-thumb { background: var(--primary-color); border-radius: 3px; }
+.tx-list { list-style: none; padding-right: 6px; }
+.tx-list-compact { max-height: 480px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+.tx-list-compact::-webkit-scrollbar { width: 5px; }
+.tx-list-compact::-webkit-scrollbar-track { background: var(--border-color); border-radius: 3px; }
+.tx-list-compact::-webkit-scrollbar-thumb { background: var(--primary-color); border-radius: 3px; }
 
 .transaction {
     display: flex; justify-content: space-between; align-items: center;
@@ -214,6 +222,7 @@ select { appearance: none; -webkit-appearance: none; -moz-appearance: none; back
     border-radius: 10px; box-shadow: 0 3px 10px var(--shadow-color);
     position: relative; border-left: 4px solid; gap: 10px;
 }
+.transaction:last-child { margin-bottom: 0; }
 .transaction.income { border-left-color: var(--income-color); }
 .transaction.expense { border-left-color: var(--expense-color); }
 
@@ -240,6 +249,22 @@ select { appearance: none; -webkit-appearance: none; -moz-appearance: none; back
 .delete-btn:hover, .delete-btn:active { background-color: rgba(239, 35, 60, 0.1); color: var(--error-color); }
 
 .no-transactions { text-align: center; padding: 30px; color: var(--gray-medium); }
+
+/* Pagination */
+.pagination {
+    display: flex; align-items: center; justify-content: center; flex-wrap: wrap;
+    gap: 6px; margin-top: 18px;
+}
+.page-btn {
+    min-width: 36px; height: 36px; padding: 0 8px; border-radius: 8px;
+    border: 1px solid var(--border-color); background: var(--card-color); color: var(--text-color);
+    font-size: 0.85rem; font-weight: 500; cursor: pointer; font-family: inherit;
+    display: flex; align-items: center; justify-content: center;
+}
+.page-btn:hover:not(.active):not(:disabled) { border-color: var(--primary-color); color: var(--primary-color); }
+.page-btn.active { background: var(--primary-color); border-color: var(--primary-color); color: #fff; }
+.page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.page-ellipsis { color: var(--gray-medium); padding: 0 4px; font-size: 0.85rem; }
 
 /* ===== Reports page ===== */
 .report-preview-section { display: none; flex-direction: column; gap: 18px; }
@@ -331,6 +356,7 @@ select { appearance: none; -webkit-appearance: none; -moz-appearance: none; back
     .form-section { display: none; }
     .form-section.active { display: block; }
     .toast-message { bottom: 90px; }
+    .tx-list-compact { max-height: none; overflow: visible; }
 }
 
 @media (max-width: 480px) {
@@ -340,6 +366,8 @@ select { appearance: none; -webkit-appearance: none; -moz-appearance: none; back
     .summary-grid { grid-template-columns: 1fr; }
     .transaction { flex-wrap: wrap; }
     .transaction-amount { order: 3; margin-left: auto; }
-    .tab-btn { font-size: 0.8rem; padding: 9px 8px; }
+    .tab-btn { font-size: 0.78rem; padding: 9px 6px; gap: 5px; }
+    .transactions-header { flex-direction: column; align-items: flex-start; }
+    .page-btn { min-width: 32px; height: 32px; font-size: 0.8rem; }
 }
 </style>

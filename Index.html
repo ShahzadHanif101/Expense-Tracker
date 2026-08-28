@@ -30,6 +30,7 @@
     <main class="app-main">
       <nav class="app-tabs">
         <button type="button" class="tab-btn active" data-page="dashboard"><i class="fas fa-home"></i> Dashboard</button>
+        <button type="button" class="tab-btn" data-page="history"><i class="fas fa-list"></i> History</button>
         <button type="button" class="tab-btn" data-page="reports"><i class="fas fa-file-pdf"></i> Reports</button>
       </nav>
 
@@ -111,11 +112,26 @@
 
         <section class="transactions-section">
           <div class="transactions-header">
-            <h3><i class="fas fa-history"></i> Transaction History</h3>
+            <h3><i class="fas fa-history"></i> Recent Transactions</h3>
+            <button type="button" class="link-btn" id="view-all-btn">View All <i class="fas fa-arrow-right"></i></button>
+          </div>
+          <div class="transactions-container">
+            <ul id="recent-transactions" class="tx-list tx-list-compact">
+              <li class="no-transactions"><i class="fas fa-spinner fa-spin"></i> Loading...</li>
+            </ul>
+          </div>
+        </section>
+      </div>
+
+      <!-- ============ HISTORY PAGE ============ -->
+      <div id="page-history" class="app-page">
+        <section class="transactions-section">
+          <div class="transactions-header">
+            <h3><i class="fas fa-list"></i> All Transactions</h3>
             <div class="filter-controls">
               <div class="filter-group">
                 <div class="select-wrapper small">
-                  <select id="filter-type">
+                  <select id="history-filter-type">
                     <option value="all">All Types</option>
                     <option value="income">Income</option>
                     <option value="expense">Expense</option>
@@ -124,15 +140,16 @@
                 </div>
               </div>
               <div class="filter-group search-group">
-                <input type="text" id="filter-search" placeholder="Search description / notes...">
+                <input type="text" id="history-filter-search" placeholder="Search description / notes...">
               </div>
             </div>
           </div>
           <div class="transactions-container">
-            <ul id="transactions">
+            <ul id="history-transactions" class="tx-list">
               <li class="no-transactions"><i class="fas fa-spinner fa-spin"></i> Loading...</li>
             </ul>
           </div>
+          <div class="pagination" id="history-pagination"></div>
         </section>
       </div>
 
@@ -205,7 +222,7 @@
     </button>
 
     <footer class="app-footer">
-      <p>© 2026 Expense Tracker | Synced with Google Sheets</p>
+      <p>© 2025 Expense Tracker | Synced with Google Sheets</p>
     </footer>
   </div>
 
