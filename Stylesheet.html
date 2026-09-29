@@ -179,9 +179,25 @@ input:focus, select:focus, textarea:focus {
 .select-wrapper i { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); pointer-events: none; color: var(--gray-medium); }
 select { appearance: none; -webkit-appearance: none; -moz-appearance: none; background: none; padding-right: 2rem; }
 
-.input-with-icon { position: relative; }
-.input-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--gray-medium); }
-.input-with-icon input { padding-left: 40px; }
+.input-with-icon { 
+  position: relative; 
+}
+
+.input-icon { 
+  position: absolute; 
+  left: 15px; 
+  top: 50%; 
+  transform: translateY(-50%); 
+  color: var(--gray-medium); 
+  /* Ensures the input text doesn't overlap if the currency code changes length */
+  white-space: nowrap; 
+}
+
+.input-with-icon input { 
+  /* Increased from 40px to 75px to push your typed numbers away from 'AED - ' */
+  padding-left: 75px; 
+}
+
 
 .btn {
     display: inline-flex; align-items: center; justify-content: center; gap: 8px;
